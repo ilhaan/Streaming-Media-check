@@ -52,6 +52,8 @@ def movie_data(title):
 	HTMLsource2 = url.read()
 	url.close()
 	Netflix()
+	Amazon_Prime()
+	Hulu_Plus()
 
 def Netflix():
 	service = sre.findall('friendlyName":"([^"]+)', HTMLsource2)
