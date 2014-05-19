@@ -1,5 +1,5 @@
 #Python Library Imports
-import os, sys, sre, json, urllib, shutil, logging, stat, datetime, httplib, urllib, module_locater, tools
+import os, sys, sre, json, urllib, shutil, logging, stat, datetime, httplib, module_locater, tools
 from xml.dom import minidom
 #------------------
 header = """
@@ -64,6 +64,7 @@ def delete_movie():
 		print "%s marked for deletion. Moving on to the next movie." % movie
 		logger.info('%s is avalible on Netflix.' % movie)
 
+'''
 def pushover():
 	if 1 in to_delete:
 		conn = httplib.HTTPSConnection("api.pushover.net:443")
@@ -83,6 +84,7 @@ def pushover():
 		"message": "Netflix/Plex Scan has been run, but found no new movies to delete.",
 		}), { "Content-type": "application/x-www-form-urlencoded" })
 		conn.getresponse()
+'''
 
 plex_url = 'http://localhost:32400/library/sections/2/all'
 root_tree = minidom.parse(urllib.urlopen(plex_url))
@@ -94,8 +96,8 @@ for t in video:
 		to_delete = '1'
 		delete_movie()
 	else:
-		os.system('cls')
+		os.system('clear')
 		print header
 		print "%s is not available on Netflix. Moving on to next movie." % movie
 		continue
-pushover()
+#pushover()

@@ -1,7 +1,7 @@
 Streaming-Media-check
 =====================
 
-A Python script I'm putting together to check my media server for content avaliable on Streaming services, and offer the choice to delete, in order to save space.
+A Python script I'm putting together to check my media server for content available on Streaming services, and offer the choice to delete, in order to save space.
 
 Recently added:
 - Changed log directory to base path. this should make it non-OS dependent.
