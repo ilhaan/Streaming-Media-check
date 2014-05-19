@@ -60,6 +60,20 @@ def Netflix():
 	else:
 		return False
 
+def Amazon_Prime():
+	service = sre.findall('friendlyName":"([^"]+)', HTMLsource2)
+	if "Amazon Prime" in service:
+		return True
+	else:
+		return False
+
+def Hulu_Plus():
+	service = sre.findall('friendlyName":"([^"]+)', HTMLsource2)
+	if "Hulu Plus" in service:
+		return True
+	else:
+		return False
+
 def delete_movie():
 		print "%s marked for deletion. Moving on to the next movie." % movie
 		logger.info('%s is avalible on Netflix.' % movie)
@@ -93,7 +107,11 @@ for t in video:
 	title = t.getAttribute('title')
 	movie_data(title)
 	if Netflix() is True:
-		to_delete = '1'
+#		to_delete = '1'
+		delete_movie()
+	elif Amazon_Prime() is True:
+		delete_movie()
+	elif Hulu_Plus() is True:
 		delete_movie()
 	else:
 		os.system('clear')
