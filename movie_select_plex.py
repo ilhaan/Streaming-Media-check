@@ -1,5 +1,5 @@
 #Python Library Imports
-import os, sys, sre, json, urllib, shutil, logging, stat, win32api, win32con, datetime, httplib, urllib, module_locater, tools
+import os, sys, sre, json, urllib, shutil, logging, stat, datetime, httplib, urllib, module_locater, tools
 from xml.dom import minidom
 #------------------
 header = """
