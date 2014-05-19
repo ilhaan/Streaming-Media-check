@@ -121,6 +121,6 @@ for t in video:
 	else:
 		os.system('clear')
 		print header
-		print "%s is not available on Netflix. Moving on to next movie." % movie
+		print "%s is not available on Netflix, Amazon Prime Instant Video or Hulu Plus. Moving on to next movie." % movie
 		continue
 #pushover()
