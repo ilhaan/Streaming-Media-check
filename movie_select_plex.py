@@ -74,9 +74,9 @@ def Hulu_Plus():
 	else:
 		return False
 
-def delete_movie():
+def delete_movie(service_name):
 		print "%s marked for deletion. Moving on to the next movie." % movie
-		logger.info('%s is avalible on Netflix.' % movie)
+		logger.info('%s is avalible on %s.' % (movie,service_name))
 
 '''
 def pushover():
@@ -107,12 +107,15 @@ for t in video:
 	title = t.getAttribute('title')
 	movie_data(title)
 	if Netflix() is True:
-#		to_delete = '1'
-		delete_movie()
+		#to_delete = '1'
+		service_name = "Netflix"
+		delete_movie(service_name)
 	elif Amazon_Prime() is True:
-		delete_movie()
+		service_name = "Amazon Prime Instant Video"
+		delete_movie(service_name)
 	elif Hulu_Plus() is True:
-		delete_movie()
+		service_name = "Hulu"
+		delete_movie(service_name)
 	else:
 		os.system('clear')
 		print header
