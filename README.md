@@ -16,11 +16,6 @@ To-Do (dmartinez7500):
 - Ability to search for TV Shows as well. Not sure how to handle different seasons however.
 - Ability to move movies to another location instead of deleting. Might be handy for when Netflix no longer has the movie.
 
-Notes (ilhaan):
-- Amazon and Hulu checks do not work at present. Look at section below for changes that need to be made in order to fix this
-
 Modifications to be made (ilhaan):
-- Create a 'movie' class for each movie with variables 'id_', 'name', 'netflix', 'hulu', 'amazon'
-- Create methods for class such as 'netflix_check', 'hulu_check' etc
 - Create two modes of operation: List Mode and Delete Mode. List Mode will list all movies that are available on any of the streaming services on to a log/text file. Delete Mode will delete the movie from the hard drive (how to handle video files in folders?)
 - Allow user to select streaming services to compare against

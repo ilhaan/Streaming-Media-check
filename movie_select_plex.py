@@ -1,11 +1,12 @@
 #Python Library Imports
-import os, sys, sre, json, urllib, shutil, logging, stat, datetime, httplib, module_locater, tools
+# import stat, httplib, tools #this is the original import
+import os, urllib, json, re, datetime, module_locater, logging
 from xml.dom import minidom
 #------------------
 header = """
 ****************************************
 *                                      *
-*     Streaming Service Check          *
+*       Streaming Service Check        *
 *                                      *
 ****************************************
 \n"""
@@ -24,62 +25,72 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 
-def movie_data(title):
-	global movie1
-	global movie
-	movie1 = (title)
-	movie_paren = movie1.replace('(', '').replace(')', '')
-	movie = movie_paren
-	movie_url = "http://www.canistream.it/services/search?movieName=%s" % movie
-	try:
-		url = urllib.urlopen(movie_url)
-	except UnicodeError:
-		print 'Non-ASCII Characters in title. Skipping.'
-		logger.info('Non-ASCII Characters in title of %s' % movie)
-		return False
-	HTMLsource1 = url.read()
+
+# Function to get movie's id from CanIStream.it
+def get_movie_id(movie_name):
+	movie_id_search_url = "http://www.canistream.it/services/search?movieName=%s" % movie_name
+	url = urllib.urlopen(movie_id_search_url)
+	json_data = url.read()
 	url.close()
-	data_j = json.loads(HTMLsource1)
-	try:
-		ID = data_j[0]['_id']
-	except IndexError:
-		print 'Invalid characters in title. Skipping.'
-		logger.info('Invalid Search Characters in title of %s' % movie)
-		return False
-	movie_url2 = "http://www.canistream.it/services/query?movieId=%s&attributes=1&mediaType=streaming" % ID
-	url = urllib.urlopen(movie_url2)
-	global HTMLsource2
-	HTMLsource2 = url.read()
+	data = json.loads(json_data)
+	movie_id = data[0]["_id"]
+	return movie_id
+
+# Function to get streaming services movie is available on from CanIStream.it
+def get_streaming_info(movie_id):
+	movie_strinfo_url = "http://www.canistream.it/services/query?movieId=%s&attributes=1&mediaType=streaming" % movie_id
+	url = urllib.urlopen(movie_strinfo_url)
+	data = url.read()
 	url.close()
-	Netflix()
-	Amazon_Prime()
-	Hulu_Plus()
+	streaming_info = re.findall('friendlyName":"([^"]+)', data)
+	return streaming_info
 
-def Netflix():
-	service = sre.findall('friendlyName":"([^"]+)', HTMLsource2)
-	if 'Netflix Instant' in service:
+# Function to check of movie is available on Netflix Instant Streaming
+def netflix_check(streaming_info):
+	if 'Netflix Instant' in streaming_info:
 		return True
 	else:
 		return False
 
-def Amazon_Prime():
-	service = sre.findall('friendlyName":"([^"]+)', HTMLsource2)
-	if "Amazon Prime" in service:
+# Function to check if movie is available on Hulu Plus
+def hulu_check(streaming_info):
+	if 'Hulu Plus' in streaming_info:
 		return True
 	else:
 		return False
 
-def Hulu_Plus():
-	service = sre.findall('friendlyName":"([^"]+)', HTMLsource2)
-	if "Hulu Plus" in service:
+# Function to check if movie is available on Amazon Prime Instant Video
+def amazon_check(streaming_info):
+	if 'Amazon Prime' in streaming_info:
 		return True
 	else:
 		return False
 
+# Class that stores movie name and streaming services that movie is available on
+class MovClass(object):
+	def __init__(self, movie_name):
+		self.movie_name = movie_name
+		self.streaming_info = get_streaming_info(get_movie_id(movie_name))
+
+movtest = MovClass("The Terminator")
+if netflix_check(movtest.streaming_info):
+	print "%s is available on Netflix" % movtest.movie_name
+if hulu_check(movtest.streaming_info):
+	print "%s is available on Hulu" % movtest.movie_name
+if amazon_check(movtest.streaming_info):
+	print "%s is available on Amazon Prime Instant Video" % movtest.movie_name
+
+
+'''
+#This function still needs to be modfied
 def delete_movie(service_name):
 		print "%s marked for deletion. Moving on to the next movie." % movie
 		logger.info('%s is avalible on %s.' % (movie,service_name))
+'''
 
+
+'''
+#These commands below still need to be modified
 plex_url = 'http://localhost:32400/library/sections/2/all'
 root_tree = minidom.parse(urllib.urlopen(plex_url))
 video = root_tree.getElementsByTagName('Video')
@@ -101,3 +112,4 @@ for t in video:
 		print header
 		print "%s is not available on Netflix, Amazon Prime Instant Video or Hulu Plus. Moving on to next movie." % movie
 		continue
+'''
