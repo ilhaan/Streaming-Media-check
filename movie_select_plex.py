@@ -80,28 +80,6 @@ def delete_movie(service_name):
 		print "%s marked for deletion. Moving on to the next movie." % movie
 		logger.info('%s is avalible on %s.' % (movie,service_name))
 
-'''
-def pushover():
-	if 1 in to_delete:
-		conn = httplib.HTTPSConnection("api.pushover.net:443")
-		conn.request("POST", "/1/messages.json",
-		urllib.urlencode({
-		"token": "afTHBbHyLBSUFTNNPhBV9oDtBpqCUJ",
-		"user": "uU95W9hYqeW3b24uyPaT1skT1SG35N",
-		"message": "Netflix/Plex Scan has been run, and found new items to delete. Check the log for new movies to remove from Plex. ",
-		}), { "Content-type": "application/x-www-form-urlencoded" })
-		conn.getresponse()
-	else:
-		conn = httplib.HTTPSConnection("api.pushover.net:443")
-		conn.request("POST", "/1/messages.json",
-		urllib.urlencode({
-		"token": "afTHBbHyLBSUFTNNPhBV9oDtBpqCUJ",
-		"user": "uU95W9hYqeW3b24uyPaT1skT1SG35N",
-		"message": "Netflix/Plex Scan has been run, but found no new movies to delete.",
-		}), { "Content-type": "application/x-www-form-urlencoded" })
-		conn.getresponse()
-'''
-
 plex_url = 'http://localhost:32400/library/sections/2/all'
 root_tree = minidom.parse(urllib.urlopen(plex_url))
 video = root_tree.getElementsByTagName('Video')
@@ -123,4 +101,3 @@ for t in video:
 		print header
 		print "%s is not available on Netflix, Amazon Prime Instant Video or Hulu Plus. Moving on to next movie." % movie
 		continue
-#pushover()
