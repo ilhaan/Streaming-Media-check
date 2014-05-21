@@ -29,7 +29,11 @@ logger.setLevel(logging.INFO)
 # Function to get movie's id from CanIStream.it
 def get_movie_id(movie_name):
 	movie_id_search_url = "http://www.canistream.it/services/search?movieName=%s" % movie_name
-	url = urllib.urlopen(movie_id_search_url)
+	try:
+		url = urllib.urlopen(movie_id_search_url)
+	except UnicodeError:
+		logger.info("Non ASCII Character in %s" % movie_name)
+		return False
 	json_data = url.read()
 	url.close()
 	data = json.loads(json_data)
@@ -66,50 +70,35 @@ def amazon_check(streaming_info):
 	else:
 		return False
 
+# Function to mark movie for deletion in log file
+def delete_movie(movie_name, service_name):
+		print "%s marked for deletion. Moving on to the next movie." % movie_name
+		logger.info('%s is avalible on %s.' % (movie_name,service_name))
+
 # Class that stores movie name and streaming services that movie is available on
 class MovClass(object):
-	def __init__(self, movie_name):
-		self.movie_name = movie_name
+	def __init__(self, name):
+		self.name = name
 		self.streaming_info = get_streaming_info(get_movie_id(movie_name))
 
-movtest = MovClass("The Terminator")
-if netflix_check(movtest.streaming_info):
-	print "%s is available on Netflix" % movtest.movie_name
-if hulu_check(movtest.streaming_info):
-	print "%s is available on Hulu" % movtest.movie_name
-if amazon_check(movtest.streaming_info):
-	print "%s is available on Amazon Prime Instant Video" % movtest.movie_name
-
-
-'''
-#This function still needs to be modfied
-def delete_movie(service_name):
-		print "%s marked for deletion. Moving on to the next movie." % movie
-		logger.info('%s is avalible on %s.' % (movie,service_name))
-'''
-
-
-'''
-#These commands below still need to be modified
+os.system("clear")
+print header
 plex_url = 'http://localhost:32400/library/sections/2/all'
 root_tree = minidom.parse(urllib.urlopen(plex_url))
 video = root_tree.getElementsByTagName('Video')
 for t in video:
-	title = t.getAttribute('title')
-	movie_data(title)
-	if Netflix() is True:
-		#to_delete = '1'
-		service_name = "Netflix"
-		delete_movie(service_name)
-	elif Amazon_Prime() is True:
-		service_name = "Amazon Prime Instant Video"
-		delete_movie(service_name)
-	elif Hulu_Plus() is True:
-		service_name = "Hulu"
-		delete_movie(service_name)
+	movie_name = t.getAttribute('title')
+	mov = MovClass(movie_name)
+	if netflix_check(mov.streaming_info) == True:
+		print "%s is on Netflix" % mov.name
+		delete_movie(mov.name, "Netflix")
+	elif hulu_check(mov.streaming_info) == True:
+		print "%s is on Hulu" % mov.name
+		delete_movie(mov.name, "Hulu")
+	elif amazon_check(mov.streaming_info) == True:
+		print "%s is on Amazon Prime Instant Video" % mov.name
+		delete_movie(mov.name, "Amazon Prime Instant Video")
 	else:
-		os.system('clear')
+		os.system("clear")
 		print header
-		print "%s is not available on Netflix, Amazon Prime Instant Video or Hulu Plus. Moving on to next movie." % movie
-		continue
-'''
+		print "%s is not available on Netflix, Amazon Prime Instant Video or Hulu Plus. Moving on to next movie." % mov.name

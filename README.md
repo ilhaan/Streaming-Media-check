@@ -19,3 +19,4 @@ To-Do (dmartinez7500):
 Modifications to be made (ilhaan):
 - Create two modes of operation: List Mode and Delete Mode. List Mode will list all movies that are available on any of the streaming services on to a log/text file. Delete Mode will delete the movie from the hard drive (how to handle video files in folders?)
 - Allow user to select streaming services to compare against
+- XML parsing currently done using MiniDOM. This is said to be slow and memory hungry. Try and change this to an ElementTree (xml.etree.ElementTree) implementation.
